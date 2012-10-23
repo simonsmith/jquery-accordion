@@ -52,7 +52,7 @@
                         var paneParent = $(this).parents(self.options.selectors.item);
 
                         if (paneParent.hasClass(self.options.openClass)) {
-                            self._slideUp(self.panes.find(self.options.selectors.content));
+                            self._slideUp($(this).siblings(self.options.selectors.content));
                         } else {
                             self.openPane(paneParent);
                         }
