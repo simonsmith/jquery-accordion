@@ -26,7 +26,9 @@
                     },
                     callbacks: {
                         openPane: null,
-                        closePane: null
+                        openAll: null,
+                        closePane: null,
+                        closeAll: null
                     }
                 }, options);
 
@@ -63,7 +65,6 @@
 
                 removeEvents: function() {
                     this.container.off(this.eventType + '.accordion', this.options.selectors.header);
-
                     return this;
                 },
 
@@ -93,9 +94,32 @@
                     return this;
                 },
 
+                openAllPanes: function() {
+                    this._toggleAll('slideDown', 'addClass', 'openAll');
+                    return this;
+                },
+
+                closeAllPanes: function() {
+                    this._toggleAll('slideUp', 'removeClass', 'closeAll');
+                    return this;
+                },
+
+                _toggleAll: function(animMethod, classMethod, callback) {
+                    var self = this;
+                    var cb = self.options.callbacks[callback];
+
+                    this.panes.find(self.options.selectors.content)[animMethod](function() {
+                        $(this).parents(self.options.selectors.item)[classMethod](self.options.openClass);
+
+                        if (typeof cb === 'function') {
+                            cb.call(this);
+                        }
+                    });
+                },
+
                 _slideUp: function(element) {
                     var self = this;
-                    var cb = this.options.callbacks.closePane;
+                    var cb = self.options.callbacks.closePane;
 
                     element.slideUp(self.options.animSpeed, function() {
                         self.panes.removeClass(self.options.openClass);
