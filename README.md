@@ -24,6 +24,22 @@ $.accordion('.some-container', {
 ```
 Doesn't really follow the traditional jQuery plugin style, but I prefer AMD so this was just a quick addition for non-AMD users :)
 
+## Methods
+Supports `openAllPanes` and `closeAllPanes`
+
+Example
+```js
+var accord = $.accordion('.selector');
+
+$('button.open').on('click', function(){
+    accord.openAllPanes();
+});
+
+$('button.close').on('click', function(){
+    accord.closeAllPanes();
+})​;
+```
+
 ## Options
 
 ```js
@@ -45,12 +61,6 @@ Doesn't really follow the traditional jQuery plugin style, but I prefer AMD so t
         item: '.accordion-item',
         header: '.accordion-header',
         content: '.accordion-content'
-    },
-    
-	// Set these as functions, and we'll call you
-    callbacks: {
-        openPane: null,
-        closePane: null
     }
 }
 ```
