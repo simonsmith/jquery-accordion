@@ -1,3 +1,4 @@
+
 /*
     Simple accordion, suitable for responsive design
     https://github.com/simonsmith/jQuery-Accordion
@@ -51,7 +52,7 @@
                     var paneParent = $this.parents(self.options.selectors.item);
 
                     if (paneParent.find(self.options.selectors.content).is(':visible')) {
-                        self._slideUp($this.siblings(self.options.selectors.content));
+                        self._slideUp($this.parents(self.options.selectors.item).find(self.options.selectors.content));
                     } else {
                         self.openPane(paneParent);
                     }
@@ -100,7 +101,6 @@
 
             _slideUp: function(element) {
                 var self = this;
-
                 element.slideUp(self.options.animSpeed, function() {
                     self.panes.removeClass(self.options.openClass);
                 });
