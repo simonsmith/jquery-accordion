@@ -18,6 +18,7 @@
                 openClass: 'is-open-pane',
                 activeClass: 'js-accordion-active',
                 animSpeed: 'fast',
+                touchEvents: true,
                 openPane: 0,
                 selectors: {
                     item: '.accordion-item',
@@ -44,8 +45,14 @@
         Accordion.prototype = {
 
             attachEvents: function() {
-                var self = this;
-                var eventType = ('ontouchstart' in document.documentElement ? 'touchstart' : 'click');
+                var self = this, eventType;
+
+                if (self.options.touchEvents) {
+                    // Still check for touch support
+                    eventType = ('ontouchstart' in document.documentElement ? 'touchstart' : 'click');
+                } else {
+                    eventType = 'click';
+                }
 
                 this.container.on(eventType + '.accordion', this.options.selectors.header, function(event) {
                     var $this = $(this);
