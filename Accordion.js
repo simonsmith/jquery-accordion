@@ -18,7 +18,8 @@
                 openClass: 'is-open-pane',
                 activeClass: 'js-accordion-active',
                 animSpeed: 'fast',
-                touchEvents: true,
+                touchEvents: true,	
+    	        touchEventType: 'touchstart',
                 openPane: 0,
                 selectors: {
                     item: '.accordion-item',
@@ -49,7 +50,7 @@
 
                 if (self.options.touchEvents) {
                     // Still check for touch support
-                    eventType = ('ontouchstart' in document.documentElement ? 'touchstart' : 'click');
+                    eventType = ('ontouchstart' in document.documentElement ? self.options.touchEventType : 'click');
                 } else {
                     eventType = 'click';
                 }
