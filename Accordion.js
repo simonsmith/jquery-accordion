@@ -7,31 +7,14 @@
 
 !function(global) {
 
-    var wrap = function($) {
+    var factory = function($) {
 
         var Accordion = function(container, options) {
-            if (!(this instanceof Accordion)) {
-                return new Accordion(container, options);
-            }
-
-            this.options = $.extend(true, {
-                openClass: 'is-open-pane',
-                activeClass: 'js-accordion-active',
-                animSpeed: 'fast',
-                touchEvents: true,	
-    	        touchEventType: 'touchstart',
-                openPane: 0,
-                selectors: {
-                    item: '.accordion-item',
-                    header: '.accordion-header',
-                    content: '.accordion-content'
-                }
-            }, options);
-
+            this.options = options;
             this.container = $(container);
             this.panes = this.container.find(this.options.selectors.item);
 
-            this.attachEvents();
+            this._attachEvents();
 
             if (typeof this.options.openPane === 'number') {
                 this.panes.eq(this.options.openPane)
@@ -44,30 +27,6 @@
         };
 
         Accordion.prototype = {
-
-            attachEvents: function() {
-                var self = this, eventType;
-
-                if (self.options.touchEvents) {
-                    // Still check for touch support
-                    eventType = ('ontouchstart' in document.documentElement ? self.options.touchEventType : 'click');
-                } else {
-                    eventType = 'click';
-                }
-
-                this.container.on(eventType + '.accordion', this.options.selectors.header, function(event) {
-                    var $this = $(this);
-                    var paneParent = $this.parents(self.options.selectors.item);
-
-                    if (paneParent.find(self.options.selectors.content).is(':visible')) {
-                        self._slideUp($this.parents(self.options.selectors.item).find(self.options.selectors.content));
-                    } else {
-                        self.openPane(paneParent);
-                    }
-
-                    event.preventDefault();
-                });
-            },
 
             openPane: function(element) {
                 var self = this;
@@ -112,17 +71,62 @@
                 element.slideUp(self.options.animSpeed, function() {
                     self.panes.removeClass(self.options.openClass);
                 });
+            },
+
+            _attachEvents: function() {
+                var self = this, eventType;
+
+                if (self.options.touchEvents) {
+                    // Still check for touch support
+                    eventType = ('ontouchstart' in document.documentElement ? self.options.touchEventType : 'click');
+                } else {
+                    eventType = 'click';
+                }
+
+                this.container.on(eventType + '.accordion', this.options.selectors.header, function(event) {
+                    var $this = $(this);
+                    var paneParent = $this.parents(self.options.selectors.item);
+
+                    if (paneParent.find(self.options.selectors.content).is(':visible')) {
+                        self._slideUp($this.parents(self.options.selectors.item).find(self.options.selectors.content));
+                    } else {
+                        self.openPane(paneParent);
+                    }
+
+                    event.preventDefault();
+                });
             }
+
         };
 
-        return Accordion;
+        $.fn.accordion = function(options) {
+            options = $.extend({}, $.fn.accordion.defaults, options);
+            return this.each(function() {
+                new Accordion($(this), options);
+            });
+        };
+
+        // Plugin defaults
+        $.fn.accordion.defaults = {
+            openClass: 'is-open-pane',
+            activeClass: 'js-accordion-active',
+            animSpeed: 'fast',
+            touchEvents: true,
+            touchEventType: 'touchstart',
+            openPane: 0,
+            selectors: {
+                item: '.accordion-item',
+                header: '.accordion-header',
+                content: '.accordion-content'
+            }
+        }
 
     };
 
     if (typeof define === 'function' && define.amd) {
-        define(['jquery'], wrap);
+        define(['jquery'], factory);
     } else {
-        global.jQuery.accordion = wrap(global.jQuery);
+        factory(global.jQuery);
     }
 
 }(this);
